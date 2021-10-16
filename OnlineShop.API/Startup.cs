@@ -1,16 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OnlineShop.API.Infrastructure;
+using OnlineShop.Bll.Services;
+using OnlineShop.Dal;
+using OnlineShop.Domain.Auth;
 
 namespace OnlineShop.API
 {
@@ -23,9 +21,27 @@ namespace OnlineShop.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<OnlineShopDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddIdentity<User, Role>(options =>
+            {
+                //options.Password.RequireDigit = true;
+                //options.Password.RequireLowercase = true;
+                options.Password.RequiredLength = 8;
+            })
+            .AddEntityFrameworkStores<OnlineShopDbContext>();
+
+            var authOptions = services.ConfigureAuthOptions(Configuration);
+            services.AddJwtAuthentication(authOptions);
+
+
+            services.AddScoped<IUserServices, UserServices>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -34,7 +50,6 @@ namespace OnlineShop.API
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -48,7 +63,10 @@ namespace OnlineShop.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors(configurePolicy => configurePolicy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseEndpoints(endpoints =>
             {
