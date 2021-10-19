@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Domain
 {
-    class Payment : BaseEntity
+    public class Payment : BaseEntity
     {
-
+        public double Amount { get; set; }
+        public bool IsPayed { get; set; }
+        public Order Order { get; set; }
     }
 }

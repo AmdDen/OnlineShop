@@ -13,6 +13,8 @@ namespace OnlineShop.Domain
         public double Total { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
+        public int PaymentId { get; set; }
+        public Payment Payment { get; set; }
         public IList<OrderProducts> OrderProducts { get; set; }
 
 

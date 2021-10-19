@@ -6,8 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OnlineShop.API.Infrastructure;
+using OnlineShop.Bll;
+using OnlineShop.Bll.Interfaces;
 using OnlineShop.Bll.Services;
 using OnlineShop.Dal;
+using OnlineShop.Dal.Repositories;
 using OnlineShop.Domain.Auth;
 
 namespace OnlineShop.API
@@ -42,6 +45,9 @@ namespace OnlineShop.API
 
 
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<ICategoryServices, CategoryServices>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddAutoMapper(typeof(BllAssemblyMarker));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -3,11 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Bll.Services;
 using OnlineShop.Common.Dtos.Account;
-using OnlineShop.Common.Models;
 using OnlineShop.Domain.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnlineShop.API.Controllers
