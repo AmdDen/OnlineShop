@@ -10,48 +10,46 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Dal.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository : IRepository
     {
         private readonly OnlineShopDbContext _context;
-        private readonly DbSet<T> _dbSet;
 
         public Repository(OnlineShopDbContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
         }
 
-        public void Add(T entity)
+        public void Add<T>(T entity) where T : BaseEntity
         {
-            _dbSet.Add(entity);
+            _context.Set<T>().Add(entity);
         }
 
-        public void Delete(T entity)
+        public void Delete<T>(T entity) where T : BaseEntity
         {
-            _dbSet.Remove(entity);
+            _context.Set<T>().Remove(entity);
         }
 
-        public async Task<T> Find(int id)
+        public async Task<T> Find<T>(int id) where T : BaseEntity
         {
-            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
+            return await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<T> Find(Expression<Func<T, bool>> predicate)
+        public async Task<T> Find<T>(Expression<Func<T, bool>> predicate)  where T : BaseEntity
         {
-            return await _dbSet.FirstOrDefaultAsync(predicate);
+            return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
 
-        public IQueryable<T> FindAll(Expression<Func<T, bool>> predicate)
+        public IQueryable<T> FindAll<T>(Expression<Func<T, bool>> predicate) where T : BaseEntity
         {
-            return _dbSet.Where(predicate);
+            return _context.Set<T>().Where(predicate);
         }
 
-        public IQueryable<T> GetAll()
+        public IQueryable<T> GetAll<T>() where T : BaseEntity
         {
-            return _dbSet.OrderByDescending(x => x.Id);
+            return _context.Set<T>().OrderByDescending(x => x.Id);
         }
 
-        public async Task<T> GetByIdWithInclude(int id, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<T> GetByIdWithInclude<T>(int id, params Expression<Func<T, object>>[] includeProperties) where T : BaseEntity
         {
             var query = IncludeProperties(includeProperties);
             return await query.FirstOrDefaultAsync(e => e.Id == id);
@@ -62,14 +60,14 @@ namespace OnlineShop.Dal.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public T Update(T entity)
+        public T Update<T>(T entity) where T : BaseEntity
         {
-            return _dbSet.Update(entity).Entity;
+            return _context.Set<T>().Update(entity).Entity;
         }
 
-        public IQueryable<T> IncludeProperties(params Expression<Func<T, object>>[] includeProperties)
+        public IQueryable<T> IncludeProperties<T>(params Expression<Func<T, object>>[] includeProperties) where T : BaseEntity
         {
-            IQueryable<T> entities = _dbSet;
+            IQueryable<T> entities = _context.Set<T>();
 
             foreach (var includeProperty in includeProperties)
             {

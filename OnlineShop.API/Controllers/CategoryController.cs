@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Bll.Interfaces;
 using OnlineShop.Common.Dtos.Category;
+using OnlineShop.Domain;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace OnlineShop.API.Controllers
@@ -62,6 +64,14 @@ namespace OnlineShop.API.Controllers
 
             await _services.UpdateCategory(id, dto);
             return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            await _services.DeleteCateogry(id);
+
+            return NoContent();
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using OnlineShop.API.Exceptions;
 using OnlineShop.API.Infrastructure;
 using OnlineShop.Bll;
 using OnlineShop.Bll.Interfaces;
@@ -46,7 +47,8 @@ namespace OnlineShop.API
 
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<ICategoryServices, CategoryServices>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IProductServices, ProductServices>();
+            services.AddScoped<IRepository, Repository>();
             services.AddAutoMapper(typeof(BllAssemblyMarker));
 
             services.AddControllers();
@@ -60,10 +62,13 @@ namespace OnlineShop.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // app.UseDeveloperExceptionPage();
+                
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnlineShop.API v1"));
-            }
+            } 
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

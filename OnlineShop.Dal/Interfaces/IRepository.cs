@@ -8,22 +8,22 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Dal
 {
-    public interface IRepository<T> where T : BaseEntity
+    public interface IRepository
     {
-        Task<T> Find(int id);
+        Task<TEntity> Find<TEntity>(int id) where TEntity: BaseEntity;
 
-        Task<T> Find(Expression<Func<T, bool>> predicate);
+        Task<TEntity> Find<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity: BaseEntity;
 
-        Task<T> GetByIdWithInclude(int id, params Expression<Func<T, object>>[] includeProperties);
+        Task<TEntity> GetByIdWithInclude<TEntity>(int id, params Expression<Func<TEntity, object>>[] includeProperties) where TEntity: BaseEntity;
 
-        IQueryable<T> GetAll();
-        IQueryable<T> FindAll(Expression<Func<T, bool>> predicate);
+        IQueryable<TEntity> GetAll<TEntity>() where TEntity: BaseEntity;
+        IQueryable<TEntity> FindAll<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity: BaseEntity;
 
-        void Add(T entity);
+        void Add<TEntity>(TEntity entity) where TEntity: BaseEntity;
 
-        T Update(T entity);
+        TEntity Update<TEntity>(TEntity entity) where TEntity : BaseEntity;
 
-        void Delete(T entity);
+        void Delete<TEntity>(TEntity entity) where TEntity : BaseEntity;
 
         Task Save();
     }
